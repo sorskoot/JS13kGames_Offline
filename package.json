@@ -11,9 +11,7 @@
     "build": "webpack --config webpack.config --progress --colors",
     "watch": "webpack --config webpack.config --colors --watch",
     "zip": "cd dist; zip -r ../dist.zip .; cd ..; wc -c dist.zip",
-    "lint": "eslint ./src --fix",
     "package": "npm run clean && npm run build && npm run zip",
-    "prepush": "npm run lint",
     "sass": "sass ./src/sass/root.scss ./dist/main.css",
     "sass-watch": "sass ./src/sass/root.scss ./dist/main.css --watch"
   },
