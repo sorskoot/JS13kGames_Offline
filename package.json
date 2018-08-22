@@ -1,0 +1,47 @@
+{
+  "name": "js13kgames_offline",
+  "version": "1.0.0",
+  "description": "Repo for the 2018 js13k games compo",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "http-server ./dist -p 443 -c-1 -S -C ./c0dr_nl.pem -K ./c0dr_nl.key",
+    "clean": "rm -rf dist/; mkdir -p dist",
+    "buildProd": "SET NODE_ENV=production&& webpack --config webpack.config --progress --colors",
+    "build": "webpack --config webpack.config --progress --colors",
+    "watch": "webpack --config webpack.config --colors --watch",
+    "zip": "cd dist; zip -r ../dist.zip .; cd ..; wc -c dist.zip",
+    "lint": "eslint ./src --fix",
+    "package": "npm run clean && npm run build && npm run zip",
+    "prepush": "npm run lint",
+    "sass": "sass ./src/sass/root.scss ./dist/main.css",
+    "sass-watch": "sass ./src/sass/root.scss ./dist/main.css --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sorskoot/JS13kGames_Offline.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sorskoot/JS13kGames_Offline/issues"
+  },
+  "homepage": "https://github.com/sorskoot/JS13kGames_Offline#readme",
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.5",
+    "babel-preset-env": "^1.7.0",
+    "compression-webpack-plugin": "^1.1.11",
+    "envify": "^4.1.0",
+    "html-webpack-plugin": "^3.2.0",
+    "http-server": "^0.11.1",
+    "husky": "^0.14.3",
+    "stats.js": "^0.17.0",
+    "transform-loader": "^0.2.4",
+    "uglify-es": "^3.3.9",
+    "uglify-js-es6": "^2.8.9",
+    "uglifyes-webpack-plugin": "^0.4.3",
+    "webpack": "^4.16.5",
+    "webpack-cli": "^3.1.0"
+  }
+}
