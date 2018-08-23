@@ -1,0 +1,1 @@
+window.rnd = m => ~~(Math.random() * m);
