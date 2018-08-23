@@ -51,5 +51,9 @@
     "webpack-cli": "^3.1.0",
     "webpack-merge": "^4.1.4",
     "sass": "^1.10.2"
+  },
+  
+  "jshintConfig":{
+    "esversion":"6"      
   }
 }
