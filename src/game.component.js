@@ -3,12 +3,45 @@
 
     module.exports = class Game {
 
+
+
         run() {
+
+            this.puzzle = [{
+                    type: 'start',
+                    pos: [5, 1, 5],
+                    rot: 1 // PI * rot/2 
+                },
+                {
+                    type: 'end',
+                    pos: [1, 1, 5],
+                    rot: 1 // PI * rot/2 
+                },
+                {
+                    type: 'mirror',
+                    pos: [1, 1, 1],
+                    rot: 0
+                },
+                {
+                    type: 'mirror',
+                    pos: [5, 1, 1],
+                    rot: 0
+                },
+                {
+                    type: 'wall',
+                    pos: [3, 1, 5],
+                    rot: 0
+                }
+            ];
+
+
             this.canvas = document.getElementById("renderCanvas"); // Get the canvas element 
             this.engine = new BABYLON.Engine(this.canvas, true); // Generate the BABYLON 3D engine
             this.maps = this.initMaps();
 
             this.scene = this.createScene();
+
+            this.drawLaser();
 
             this.engine.runRenderLoop(() => this.scene.render());
 
@@ -81,42 +114,13 @@
             // 14:
             // 15:
 
-            
 
-            var puzzle = [{
-                    type: 'start',
-                    pos: [5, 1, 5],
-                    rot: 1 // PI * rot/2 
-                },
-                {
-                    type: 'end',
-                    pos: [1, 1, 5],
-                    rot: 1 // PI * rot/2 
-                },
-                {
-                    type: 'mirror',
-                    pos: [1, 1, 1],
-                    rot: 0
-                },
-                {
-                    type: 'mirror',
-                    pos: [5, 1, 1],
-                    rot: 0
-                },
-                {
-                    type: 'wall',
-                    pos: [3, 1, 5],
-                    rot: 0
-                }
-            ];
 
             var cubes = [
-                [3, 7, 7, 7, 7], // laser
+                [7, 7, 3, 7, 7], // laser
                 [1, 1, 1, 1, 1], // wall
                 [5, 5, 5, 5, 5], // mirror
             ];
-
-
 
 
             this.vrHelper = scene.createDefaultVRExperience();
@@ -132,8 +136,6 @@
                 }
             }, scene);
 
-
-
             var planarMat = new BABYLON.StandardMaterial("planarMat", scene);
             planarMat.reflectionTexture = new BABYLON.Texture("room.png", scene);
             planarMat.reflectionTexture.coordinatesMode = BABYLON.Texture.CUBIC_MODE;
@@ -144,19 +146,33 @@
             metal.reflectivityColor = new BABYLON.Color3(0.85, 0.85, 0.85);
             metal.albedoColor = new BABYLON.Color3(0.01, 0.01, 0.01);
             let objs = [];
-            for (let i = 0; i < puzzle.length; i++) {
-                switch (puzzle[i].type) {
+            for (let i = 0; i < this.puzzle.length; i++) {
+                switch (this.puzzle[i].type) {
                     case 'start':
+                    let starbox = this.drawBox(scene, mat, cubes[0], this.puzzle[i].pos);
+                    starbox.name="startBox";
+
+                    starbox.actionManager = new BABYLON.ActionManager(scene);
+                    starbox.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPickTrigger, (function(mesh) {
+                        //console.log(mesh);
+                        let start = this.puzzle.find(b => b.type === "start");
+                        start.rot = (start.rot + 1) % 4;
+                        this.drawLaser();
+                        starbox.rotation.y = starbox.rotation.y + Math.PI / 2;
+                    }).bind(this,starbox)));
+                    objs.push[starbox];
+                    break;
                     case 'end':
-                        let box = this.drawBox(scene, mat, cubes[0], puzzle[i].pos);
+                        let box = this.drawBox(scene, mat, cubes[0], this.puzzle[i].pos);
                         box.actionManager = new BABYLON.ActionManager(scene);
-                        box.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPickTrigger, (function (mesh) {
-                            box.rotation.y = box.rotation.y - Math.PI / 2;
-                        }).bind(this, box)));
+                        box.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPickTrigger, (mesh) => {
+                          
+                            box.rotation.y = box.rotation.y + Math.PI / 2;
+                        }));
                         objs.push[box];
                         break;
                     case 'mirror':
-                        let tr = this.drawTri(scene, mat, puzzle[i].pos);
+                        let tr = this.drawTri(scene, mat, this.puzzle[i].pos);
                         tr.actionManager = new BABYLON.ActionManager(scene);
                         tr.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPickTrigger, (function (mesh) {
                             tr.rotation.y = tr.rotation.y - Math.PI / 2;
@@ -164,7 +180,7 @@
                         objs.push[tr];
                         break;
                     case 'wall':
-                        this.drawBox(scene, mat, cubes[1], puzzle[i].pos);
+                        this.drawBox(scene, mat, cubes[1], this.puzzle[i].pos);
                         break;
 
                 }
@@ -180,7 +196,7 @@
             tiledGround.material = groundmat;
 
             var camera = scene.activeCamera;
-           
+
             this.vrHelper.enableInteractions();
             this.vrHelper.enableTeleportation({
                 floorMeshName: "Tiled Ground"
@@ -209,25 +225,24 @@
 
         drawTri(scene, mat, position) {
             var customMesh = new BABYLON.Mesh("custom", scene);
-	
+
             //Set arrays for positions and indices
-var positions = [-0.5,-0.5,0.5,0.5,-0.5,-0.5,-0.5,0.5,0.5,0.5,0.5,-0.5,-0.5,-0.5,-0.5,-0.5,0.5,-0.5,-0.5,-0.5,0.5,0.5,-0.5,-0.5,-0.5,0.5,0.5,0.5,0.5,-0.5,-0.5,0.5,0.5,0.5,0.5,-0.5,-0.5,0.5,-0.5];
-            var indices = [6,8,9, 9,7,6, 4,1,3, 3,5,4, 11,10,12, 2,0,4, 4,5,2];
-            //var uvs = [0.5,0.25, 0.5,0.5, 0.25,0.5,  0.25,0.5, 0.25,0.25, 0.5,0.25,  0.0,0.5, 0.25,0.5, 0.25,0.75,  0.25,0.75, 0.0,0.75, 0.0,0.5,  0.25,0.75, 0.0,0.75, 0.25,0.5,  0.25,0.75, 0.0,0.75, 0.0,0.5,  0.0,0.5, 0.25,0.5, 0.25,0.75];
+            var positions = [-0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5];
+            var indices = [6, 8, 9, 9, 7, 6, 4, 1, 3, 3, 5, 4, 11, 10, 12, 2, 0, 4, 4, 5, 2];
             var uvs = [
                 0.0, 0.75,
                 0.25, 0.5,
-                0.25, 0.75, 
-                0.25, 0.75,  
-                0.0, 0.5, 
-                0.0, 0.75, 
-                0.5, 0.25, 
-                0.25, 0.25, 
-                0.5, 0.5,
-                0.25, 0.5, 
-                0.0, 0.75, 
                 0.25, 0.75,
-                0.25, 0.5, 
+                0.25, 0.75,
+                0.0, 0.5,
+                0.0, 0.75,
+                0.5, 0.25,
+                0.25, 0.25,
+                0.5, 0.5,
+                0.25, 0.5,
+                0.0, 0.75,
+                0.25, 0.75,
+                0.25, 0.5,
             ];
             //Create a vertexData object
             var vertexData = new BABYLON.VertexData();
@@ -238,7 +253,7 @@ var positions = [-0.5,-0.5,0.5,0.5,-0.5,-0.5,-0.5,0.5,0.5,0.5,0.5,-0.5,-0.5,-0.5
 
             //Assign positions and indices to vertexData
             vertexData.positions = positions;
-            vertexData.indices = indices;	
+            vertexData.indices = indices;
             vertexData.normals = normals;
             vertexData.uvs = uvs;
             //Apply vertexData to custom mesh
@@ -271,6 +286,50 @@ var positions = [-0.5,-0.5,0.5,0.5,-0.5,-0.5,-0.5,0.5,0.5,0.5,0.5,-0.5,-0.5,-0.5
             // extrusion.material = mat;
             // extrusion.position = new BABYLON.Vector3(...position);
             // return extrusion;
+        }
+
+        drawLaser() {
+            let start = this.puzzle.find(b => b.type === "start");
+            
+            let origin = new BABYLON.Vector3(...start.pos);
+            let direction = new BABYLON.Vector3(Math.sin(Math.PI * start.rot / 2), 0, Math.cos(Math.PI * start.rot / 2));
+            let length = 100;
+
+            var ray = new BABYLON.Ray(origin, direction, length);
+	        let rayHelper = new BABYLON.RayHelper(ray);		
+            rayHelper.show(this.scene);		
+            var hit = this.scene.pickWithRay(ray,
+                function predicate(mesh){
+                if (mesh.name == "startBox" || !mesh.isPickable){
+                    return false;
+                }
+                return true;
+            });
+            let target = new BABYLON.Vector3(start.pos[0] + Math.sin(Math.PI * start.rot / 2) * 10, 1, start.pos[2] + Math.cos(Math.PI * start.rot / 2) * 10)
+            if (hit.pickedMesh){
+               console.log(hit.pickedMesh.name);
+               target = hit.pickedMesh.position;
+            }
+
+            var myPoints = [
+                origin,
+                target                
+            ];
+
+            if(this.laser){
+                this.laser = BABYLON.MeshBuilder.CreateTube("lines", {
+                    path: myPoints,
+                    radius:.15,
+                    instance: this.laser
+                });
+            }else{
+                this.laser = BABYLON.MeshBuilder.CreateTube("lines", {
+                    path: myPoints,
+                    updatable:true,
+                    radius:.15
+                }, this.scene);
+            }
+            this.laser.isPickable = false;
         }
     };
 })();
