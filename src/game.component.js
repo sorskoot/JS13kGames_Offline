@@ -6,11 +6,24 @@
         run() {
             this.canvas = document.getElementById("renderCanvas"); // Get the canvas element 
             this.engine = new BABYLON.Engine(this.canvas, true); // Generate the BABYLON 3D engine
+            this.maps = this.initMaps();
+
             this.scene = this.createScene();
-            
+
             this.engine.runRenderLoop(() => this.scene.render());
 
             window.addEventListener("resize", () => this.engine.resize());
+        }
+
+        initMaps() {
+            let maps = [];
+
+            for (var i = 0; i < 4; i++) {
+                for (var j = 0; j < 4; j++) {
+                    maps.push(new BABYLON.Vector4(i / 4, j / 4, i / 4 + 0.25, j / 4 + 0.25));
+                }
+            }
+            return maps;
         }
 
         createScene() {
@@ -48,18 +61,11 @@
             var texture = new BABYLON.Texture("tiles.png", scene, false, true, BABYLON.Texture.NEAREST_SAMPLINGMODE);
             mat.diffuseTexture = texture;
 
-            var maps = [];
 
-            for (var i = 0; i < 4; i++) {
-                for (var j = 0; j < 4; j++) {
-                    // faceUV[i] = new BABYLON.Vector4(.75, 0, 1, .25);
-                    maps.push(new BABYLON.Vector4(i / 4, j / 4, i / 4 + 0.25, j / 4 + 0.25));
-                }
-            }
 
             //Tiles:
             // 0: Ground
-            // 1:
+            // 1: Wall
             // 2:
             // 3: Laser
             // 4:
@@ -75,21 +81,43 @@
             // 14:
             // 15:
 
-            var options = {
-                width: 1,
-                height: 1,
-                depth: 1,
-                faceUV: [maps[3], maps[7], maps[7], maps[7], maps[7], maps[7]]
-            };
+            
 
-            var box = BABYLON.MeshBuilder.CreateBox('box', options, scene);
-            box.material = mat;
-            box.position = new BABYLON.Vector3(1, 1, 0);
+            var puzzle = [{
+                    type: 'start',
+                    pos: [5, 1, 5],
+                    rot: 1 // PI * rot/2 
+                },
+                {
+                    type: 'end',
+                    pos: [1, 1, 5],
+                    rot: 1 // PI * rot/2 
+                },
+                {
+                    type: 'mirror',
+                    pos: [1, 1, 1],
+                    rot: 0
+                },
+                {
+                    type: 'mirror',
+                    pos: [5, 1, 1],
+                    rot: 0
+                },
+                {
+                    type: 'wall',
+                    pos: [3, 1, 5],
+                    rot: 0
+                }
+            ];
 
-            box.actionManager = new BABYLON.ActionManager(scene);
-            box.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPickTrigger, (function (mesh) {
-                box.rotation.y = box.rotation.y - Math.PI / 2;
-            }).bind(this, box)));
+            var cubes = [
+                [3, 7, 7, 7, 7], // laser
+                [1, 1, 1, 1, 1], // wall
+                [5, 5, 5, 5, 5], // mirror
+            ];
+
+
+
 
             this.vrHelper = scene.createDefaultVRExperience();
 
@@ -104,48 +132,56 @@
                 }
             }, scene);
 
+
+
+            var planarMat = new BABYLON.StandardMaterial("planarMat", scene);
+            planarMat.reflectionTexture = new BABYLON.Texture("room.png", scene);
+            planarMat.reflectionTexture.coordinatesMode = BABYLON.Texture.CUBIC_MODE;
+            planarMat.diffuseColor = new BABYLON.Color3(.3, .3, .3);
+            var metal = new BABYLON.PBRMaterial("metal", scene);
+            metal.reflectionTexture = new BABYLON.Texture("room.png", scene);
+            metal.microSurface = 0.96;
+            metal.reflectivityColor = new BABYLON.Color3(0.85, 0.85, 0.85);
+            metal.albedoColor = new BABYLON.Color3(0.01, 0.01, 0.01);
+            let objs = [];
+            for (let i = 0; i < puzzle.length; i++) {
+                switch (puzzle[i].type) {
+                    case 'start':
+                    case 'end':
+                        let box = this.drawBox(scene, mat, cubes[0], puzzle[i].pos);
+                        box.actionManager = new BABYLON.ActionManager(scene);
+                        box.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPickTrigger, (function (mesh) {
+                            box.rotation.y = box.rotation.y - Math.PI / 2;
+                        }).bind(this, box)));
+                        objs.push[box];
+                        break;
+                    case 'mirror':
+                        let tr = this.drawTri(scene, mat, puzzle[i].pos);
+                        tr.actionManager = new BABYLON.ActionManager(scene);
+                        tr.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPickTrigger, (function (mesh) {
+                            tr.rotation.y = tr.rotation.y - Math.PI / 2;
+                        }).bind(this, tr)));
+                        objs.push[tr];
+                        break;
+                    case 'wall':
+                        this.drawBox(scene, mat, cubes[1], puzzle[i].pos);
+                        break;
+
+                }
+
+            }
             var groundmat = new BABYLON.StandardMaterial("groundmat", scene);
             groundmat.diffuseTexture = texture.clone();
             groundmat.diffuseTexture.uScale = 0.249;
             groundmat.diffuseTexture.vScale = 0.249;
             groundmat.diffuseTexture.wrapU = BABYLON.Texture.MIRROR_ADDRESSMODE;
             groundmat.diffuseTexture.wrapV = BABYLON.Texture.MIRROR_ADDRESSMODE;
+            groundmat.specularColor = new BABYLON.Color3(0, 0, 0);
             tiledGround.material = groundmat;
 
             var camera = scene.activeCamera;
-            if (camera.controllers) {
-                camera.controllers.forEach((gp) => {
-                    console.log(gp);
-                    let mesh = gp.hand === 'right' ? rightBox : leftBox;
-
-                    gp.onPadValuesChangedObservable.add(function (stateObject) {
-                        let r = (stateObject.x + 1) / 2;
-                        let g = (stateObject.y + 1) / 2;
-                        mesh.material.diffuseColor.copyFromFloats(r, g, 1);
-                    });
-                    gp.onTriggerStateChangedObservable.add(function (stateObject) {
-                        let scale = 2 - stateObject.value;
-                        mesh.scaling.x = scale;
-                    });
-                    // oculus only
-                    /*gp.onSecondaryTriggerStateChangedObservable.add(function (stateObject) {
-                        let scale = 2 - stateObject.value;
-                        mesh.scaling.z = scale;
-                    });*/
-                    gp.attachToMesh(mesh);
-                });
-
-                var rightBox = BABYLON.Mesh.CreateBox("sphere1", 0.1, scene);
-                rightBox.scaling.copyFromFloats(2, 1, 2);
-                var leftBox = BABYLON.Mesh.CreateBox("sphere1", 0.1, scene);
-                leftBox.scaling.copyFromFloats(2, 1, 2);
-
-                rightBox.material = new BABYLON.StandardMaterial('right', scene);
-                leftBox.material = new BABYLON.StandardMaterial('right', scene);
-
-            }
+           
             this.vrHelper.enableInteractions();
-
             this.vrHelper.enableTeleportation({
                 floorMeshName: "Tiled Ground"
             });
@@ -153,8 +189,74 @@
             scene.activeCamera.inertia = 0.6;
             scene.activeCamera.speed = 0.5;
 
-       
             return scene;
+        }
+
+        drawBox(scene, mat, f, position) {
+
+            var options = {
+                width: 1,
+                height: 1,
+                depth: 1,
+                faceUV: [this.maps[f[0]], this.maps[f[1]], this.maps[f[2]], this.maps[f[3]], this.maps[f[4]], this.maps[f[5]]]
+            };
+
+            var box = BABYLON.MeshBuilder.CreateBox('box', options, scene);
+            box.material = mat;
+            box.position = new BABYLON.Vector3(...position);
+            return box;
+        }
+
+        drawTri(scene, mat, position) {
+            var customMesh = new BABYLON.Mesh("custom", scene);
+	
+            //Set arrays for positions and indices
+            var positions = [-0.5,-0.5,0.5,0.5,-0.5,-0.5,-0.5,0.5,0.5,0.5,0.5,-0.5,-0.5,-0.5,-0.5,-0.5,0.5,-0.5,-0.5,-0.5,0.5,0.5,-0.5,-0.5,-0.5,0.5,0.5,0.5,0.5,-0.5];
+            var indices = [6,8,9, 9,7,6, 4,1,3, 3,5,4, 3,2,5, 2,0,4, 4,5,2];
+            var uvs = [0.25,0.75, 0.0,0.75, 0.0,0.5, 0.25,0.5, 0.25,0.75, 0.0,0.75, 0.5,0.25, 0.25,0.5, 0.0,0.5, 0.25,0.5, 0.25,0.75, 0.0,0.75, 0.5,0.5, 0.25,0.5, 0.25,0.25];
+
+            //Create a vertexData object
+            var vertexData = new BABYLON.VertexData();
+            var normals = [];
+
+            //Calculations of normals added
+            BABYLON.VertexData.ComputeNormals(positions, indices, normals);
+
+            //Assign positions and indices to vertexData
+            vertexData.positions = positions;
+            vertexData.indices = indices;	
+            vertexData.normals = normals;
+            vertexData.uvs = uvs;
+            //Apply vertexData to custom mesh
+            vertexData.applyToMesh(customMesh);
+            customMesh.material = mat;
+            customMesh.material.backFaceCulling = false;
+            customMesh.position = new BABYLON.Vector3(...position);
+            return customMesh;
+            // var myShape = [
+            //     new BABYLON.Vector3(-.5, .5, -.5),
+            //     new BABYLON.Vector3( .5, .5, -.5),
+            //     new BABYLON.Vector3( .5,-.5, -.5)
+            // ];
+
+            // myShape.push(myShape[0]);
+
+            // var myPath = [
+            //     new BABYLON.Vector3(0, 0,0),
+            //     new BABYLON.Vector3(0, 1,0),
+            // ];
+
+            // //Create extrusion with updatable parameter set to true for later changes
+            // var extrusion = BABYLON.MeshBuilder.ExtrudeShape("star", {
+            //     shape: myShape,
+            //     path: myPath,
+            //     sideOrientation: BABYLON.Mesh.DOUBLESIDE,
+            //     updatable: true,
+            //     cap: BABYLON.Mesh.CAP_ALL
+            // }, scene);
+            // extrusion.material = mat;
+            // extrusion.position = new BABYLON.Vector3(...position);
+            // return extrusion;
         }
     };
 })();
