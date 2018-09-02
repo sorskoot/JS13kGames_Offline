@@ -2,11 +2,15 @@
 
 ## Must Have
 - Laser must be working
+  - laser must change direction on mirrors
+  - laser must stup on wall or side of mirror or laser
+- win puzzle when end laser is hit
 - Improve architecture / Refactoring
 - More puzzles
 ___
 ## Should Have
 - Menu + Game info
+- Shadows / Better Lighting
 - VR Controller support
 - More variation in blocks
 - 3D Puzzles

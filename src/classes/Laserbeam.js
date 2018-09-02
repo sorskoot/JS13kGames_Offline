@@ -1,6 +1,6 @@
-export class Laserbeam{
-    
-    constructor(scene, puzzle){
+export class Laserbeam {
+
+    constructor(scene, puzzle) {
         this.scene = scene;
         this.puzzle = puzzle;
     }
@@ -13,18 +13,17 @@ export class Laserbeam{
         let length = 100;
 
         var ray = new BABYLON.Ray(origin, direction, length);
-        // let rayHelper = new BABYLON.RayHelper(ray);
-        // rayHelper.show(this.scene);
-        var hit = this.scene.pickWithRay(ray,
-            function predicate(mesh) {
-                if (mesh.name == "startLaser" || !mesh.isPickable) {
-                    return false;
-                }
-                return true;
-            });
+        let rayHelper = new BABYLON.RayHelper(ray);
+        rayHelper.show(this.scene);
+        var hit = this.scene.pickWithRay(ray, this.predicate);
+
         let target = new BABYLON.Vector3(start.pos[0] + Math.sin(Math.PI * start.rot / 2) * 100, 0.5, start.pos[2] + Math.cos(Math.PI * start.rot / 2) * 100)
-        if (hit.pickedMesh) {
-            console.log(hit.pickedMesh.name);
+
+        if (hit.pickedMesh && hit.pickedMesh.entity) {
+            let ref = hit.pickedMesh.getFacetNormal(hit.faceId);
+            var angle = Math.round(Math.asin(BABYLON.Vector3.Cross(ref, ray.direction).y) * 180 / Math.PI);
+
+            hit.pickedMesh.entity.onHitByLaser(hit.faceId, angle);
             target = hit.pickedMesh.position;
         }
 
@@ -47,5 +46,12 @@ export class Laserbeam{
             }, this.scene);
         }
         this.laser.isPickable = false;
+    }
+
+    predicate(mesh) {
+        if (mesh.name == "startLaser" || !mesh.isPickable) {
+            return false;
+        }
+        return true;
     }
 }

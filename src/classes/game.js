@@ -67,7 +67,7 @@ export class Game {
         for (let i = 0; i < this.puzzle.length; i++) {
             switch (this.puzzle[i].type) {
                 case 'start':
-                    let startLaser = new Laser(this.scene, this.puzzle[i].pos, true);
+                    let startLaser = new Laser(this.scene, this.puzzle[i].pos, true, this.puzzle[i].rot);
                     startLaser.onPicked = () =>{
                         let start = this.puzzle.find(b => b.type === "start");
                         start.rot = (start.rot + 1) % 4;
@@ -75,10 +75,10 @@ export class Game {
                     };
                     break;
                 case 'end':
-                    new Laser(this.scene, this.puzzle[i].pos);
+                    new Laser(this.scene, this.puzzle[i].pos, false, this.puzzle[i].rot);
                     break;
                 case 'mirror':
-                    new Mirror(this.scene, this.puzzle[i].pos);
+                    new Mirror(this.scene, this.puzzle[i].pos, this.puzzle[i].rot);
                     break;
                 case 'wall':
                     new Wall(this.scene, this.puzzle[i].pos);

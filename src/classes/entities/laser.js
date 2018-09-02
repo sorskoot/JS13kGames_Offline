@@ -4,8 +4,8 @@ import {
 
 export class Laser extends Entity {
 
-    constructor(scene, position, isStart) {
-        super(scene, position, isStart ? "startLaser" : "endLaser");
+    constructor(scene, position, isStart, rotation) {
+        super(scene, position, isStart ? "startLaser" : "endLaser", rotation);
 
         this.isStart = !!isStart;
 
