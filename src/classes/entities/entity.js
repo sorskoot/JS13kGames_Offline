@@ -49,6 +49,7 @@ export class Entity {
         this.mesh.actionManager = new BABYLON.ActionManager(this.scene);
         this.mesh.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPickTrigger, (function (mesh) {
             this.onPick(this);
+            this.scene.render();
             this.onPicked(this);
         }).bind(this, this.mesh)));
 

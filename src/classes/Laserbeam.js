@@ -32,23 +32,33 @@ export class Laserbeam {
 
             let direction = hit.pickedMesh.entity.onHitByLaser(hit.faceId, angle);
             laserPoints.push(hit.pickedMesh.position);
-            if (direction == 1) {
+            if (direction == 0) {
+                target = hit.pickedMesh.position;
+            } else {
                 let currentPosition = hit.pickedMesh.position;
-                let currentRotation = (start.rot - 1) % 4;
+                let currentRotation;
+                if (direction == 1) {
+                    currentRotation = (start.rot - 1) % 4;
+                }
+                if (direction == 2) {
+                    currentRotation = (start.rot + 1) % 4;
+                }
 
                 let direction2 =
                     new BABYLON.Vector3(Math.sin(Math.PI * currentRotation / 2), 0, Math.cos(Math.PI * currentRotation / 2));
 
                 var ray2 = new BABYLON.Ray(currentPosition, direction2, length);
 
-                let rayHelper2 = new BABYLON.RayHelper(ray2);
-                rayHelper2.show(this.scene);
+                // let rayHelper2 = new BABYLON.RayHelper(ray2);
+                // rayHelper2.show(this.scene);
 
                 let target2 = new BABYLON.Vector3(currentPosition.x + Math.sin(Math.PI * currentRotation / 2) * 100, 0.5, currentPosition.z + Math.cos(Math.PI * currentRotation / 2) * 100);
 
                 laserPoints.push(target2);
             }
         }
+
+
 
         if (laserPoints.length == 1) {
             laserPoints.push(target);
