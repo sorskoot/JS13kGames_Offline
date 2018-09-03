@@ -22,7 +22,7 @@ export class Entity {
     render() {}
 
     onHitByLaser(faceId, angle) {
-
+        return 0; // stop
     }
 
     buildMesh() {

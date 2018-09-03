@@ -19,13 +19,13 @@ export class Mirror extends Entity {
         };
     }
 
-    onHitByLaser(faceId,angle) {
+    onHitByLaser(faceId, angle) {
         if (faceId == 1) {
             this.mesh.getFacetNormal(faceId);
-            if (angle > 0) console.log(`Laser hit mirror, laser turns left`);
-            if (angle < 0) console.log(`Laser hit mirror, laser turns right`);
+            if (angle > 0) return 1; // left
+            if (angle < 0) return 2; // right
         } else {
-            console.log("Laser bounce");
+            return 0; //stop
         }
 
     }
