@@ -75,7 +75,10 @@ export class Game {
                     };
                     break;
                 case 'end':
-                    new Laser(this.scene, this.puzzle[i].pos, false, this.puzzle[i].rot);
+                    let endlaser = new Laser(this.scene, this.puzzle[i].pos, false, this.puzzle[i].rot);
+                    endlaser.onPicked = () =>{
+                        this.laserbeam.drawLaser();
+                    };
                     break;
                 case 'mirror':
                     let mirror = new Mirror(this.scene, this.puzzle[i].pos, this.puzzle[i].rot);
@@ -84,7 +87,7 @@ export class Game {
                     };
                     break;
                 case 'wall':
-                    new Wall(this.scene, this.puzzle[i].pos);
+                    new Wall(this.scene, this.puzzle[i].pos, this.puzzle[i].rot);
                     break;
             }
         }

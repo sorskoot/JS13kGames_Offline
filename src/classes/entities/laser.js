@@ -18,6 +18,14 @@ export class Laser extends Entity {
         this.onPick = () => this.mesh.rotation.y = this.mesh.rotation.y + Math.PI / 2;
     }
 
+    onHitByLaser(faceId, angle) {
+        if ((faceId === 5 || faceId === 4) && !this.isStart) {
+            return 3; // winner;
+        } else {
+            return 0; //stop
+        }
+
+    }
 
 
 }
