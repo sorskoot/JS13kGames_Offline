@@ -1,8 +1,8 @@
 export class Entity {
 
     constructor(scene, position, name = "entity", rotation = 0) {
-        this.name = name;
         this.scene = scene;
+        this.name = `${name}_${this.scene.meshes.length}`;        
         this.position = position;
         this.rotation = rotation;
 
