@@ -1,11 +1,6 @@
 # JS13K Games 2018 - OFFLINE
 
 ## Must Have
-- Laser must be working
-  - laser must change direction on mirrors
-  - laser must stup on wall or side of mirror or laser
-- win puzzle when end laser is hit
-- Improve architecture / Refactoring
 - More puzzles
 ___
 ## Should Have
@@ -33,4 +28,8 @@ ___
 - Glitches on Mobile when touching
 ___
 ### Done
-- 
+- Laser must be working
+  - laser must change direction on mirrors
+  - laser must stup on wall or side of mirror or laser
+- win puzzle when end laser is hit
+- Improve architecture / Refactoring
