@@ -9,6 +9,7 @@ export class Laserbeam {
     constructor(scene, puzzle) {
         this.scene = scene;
         this.puzzle = puzzle;
+        this.onWin = () => {};
     }
 
     drawLaser() {
@@ -37,8 +38,8 @@ export class Laserbeam {
             }
 
             if (hitStatus == 3) {
-                console.log("You won!");
-                break;
+                this.onWin();
+                return;
             }
             if (hitStatus == 1) {
                 direction = (direction - 1) % 4;
@@ -59,10 +60,12 @@ export class Laserbeam {
             this.scene.removeMesh(laserbeamMesh);
 
         }
+
         this.laser = BABYLON.MeshBuilder.CreateTube("laserbeam", {
             path: laserPoints,
             radius: .15
         }, this.scene);
+        BABYLON.Tags.AddTagsTo(this.laser, "entity");
 
         this.laser.isPickable = false;
     }

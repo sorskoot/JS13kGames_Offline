@@ -1,6 +1,6 @@
 import {
-    Puzzle
-} from "./puzzle";
+    PuzzleManager
+} from "./puzzleManager";
 import {
     Wall
 } from "./entities/wall";
@@ -22,7 +22,23 @@ export class Game {
     constructor(scene) {
         this.scene = scene;
         this.maps = this.initMaps();
-        this.puzzle = new Puzzle().puzzle;
+        this.puzzleManager = new PuzzleManager();
+        this.initPuzzle();
+        this.laserbeam.onWin = () => {
+            var meshes = this.scene.getMeshesByTags("entity");
+            for (let i = 0; i < meshes.length; i++) {
+                this.scene.removeMesh(meshes[i]);
+            }
+            this.puzzleManager.next();
+            this.initPuzzle();
+            this.createPuzzle();          
+            this.laserbeam.drawLaser();  
+        };
+    }
+
+    initPuzzle() {
+        
+        this.puzzle = this.puzzleManager.puzzle;
         this.laserbeam = new Laserbeam(this.scene, this.puzzle);
     }
 
@@ -43,7 +59,7 @@ export class Game {
         var light = new BABYLON.DirectionalLight("light1", new BABYLON.Vector3(-2, -3, 1), scene);
         light.position = new BABYLON.Vector3(6, 9, 3);
 
-     
+
         //Tiles:
         // 0: Ground
         // 1: Wall
@@ -64,33 +80,7 @@ export class Game {
 
         this.vrHelper = scene.createDefaultVRExperience();
 
-        for (let i = 0; i < this.puzzle.length; i++) {
-            switch (this.puzzle[i].type) {
-                case 'start':
-                    let startLaser = new Laser(this.scene, this.puzzle[i].pos, true, this.puzzle[i].rot);
-                    startLaser.onPicked = () =>{
-                        let start = this.puzzle.find(b => b.type === "start");
-                        start.rot = (start.rot + 1) % 4;
-                        this.laserbeam.drawLaser();
-                    };
-                    break;
-                case 'end':
-                    let endlaser = new Laser(this.scene, this.puzzle[i].pos, false, this.puzzle[i].rot);
-                    endlaser.onPicked = () =>{
-                        this.laserbeam.drawLaser();
-                    };
-                    break;
-                case 'mirror':
-                    let mirror = new Mirror(this.scene, this.puzzle[i].pos, this.puzzle[i].rot);
-                    mirror.onPicked = () =>{
-                        this.laserbeam.drawLaser();
-                    };
-                    break;
-                case 'wall':
-                    new Wall(this.scene, this.puzzle[i].pos, this.puzzle[i].rot);
-                    break;
-            }
-        }
+        this.createPuzzle();
 
         let ground = new Ground(this.scene);
 
@@ -109,5 +99,35 @@ export class Game {
         scene.activeCamera.checkCollisions = true;
 
         this.laserbeam.drawLaser();
+    }
+
+    createPuzzle() {
+        for (let i = 0; i < this.puzzle.length; i++) {
+            switch (this.puzzle[i].type) {
+                case 'start':
+                    let startLaser = new Laser(this.scene, this.puzzle[i].pos, true, this.puzzle[i].rot);
+                    startLaser.onPicked = () => {
+                        let start = this.puzzle.find(b => b.type === "start");
+                        start.rot = (start.rot + 1) % 4;
+                        this.laserbeam.drawLaser();
+                    };
+                    break;
+                case 'end':
+                    let endlaser = new Laser(this.scene, this.puzzle[i].pos, false, this.puzzle[i].rot);
+                    endlaser.onPicked = () => {
+                        this.laserbeam.drawLaser();
+                    };
+                    break;
+                case 'mirror':
+                    let mirror = new Mirror(this.scene, this.puzzle[i].pos, this.puzzle[i].rot);
+                    mirror.onPicked = () => {
+                        this.laserbeam.drawLaser();
+                    };
+                    break;
+                case 'wall':
+                    new Wall(this.scene, this.puzzle[i].pos, this.puzzle[i].rot);
+                    break;
+            }
+        }
     }
 }

@@ -52,7 +52,8 @@ export class Entity {
             this.scene.render();
             this.onPicked(this);
         }).bind(this, this.mesh)));
-
+        
+        BABYLON.Tags.AddTagsTo(this.mesh, "entity");
         this.mesh.entity = this;
 
         return this.mesh;
