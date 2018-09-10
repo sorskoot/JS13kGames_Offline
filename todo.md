@@ -13,7 +13,7 @@ ___
 - Better environment
 - Lots of puzzles
 - Improve graphics
-- collision with walls
+
 ___
 ## Could Have
 - Highlighting boxes when selecting
@@ -39,3 +39,4 @@ ___
   - laser must stup on wall or side of mirror or laser
 - win puzzle when end laser is hit
 - Improve architecture / Refactoring
+- collision with walls
