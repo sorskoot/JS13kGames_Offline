@@ -1,10 +1,11 @@
 # JS13K Games 2018 - OFFLINE
 
 ## Must Have
+- Menu + Game info
 - More puzzles
 ___
 ## Should Have
-- Menu + Game info
+- Better looking laser
 - Shadows / Better Lighting
 - VR Controller support
 - More variation in blocks
@@ -26,6 +27,8 @@ ___
 ___
 ### Bugs
 - Glitches on Mobile when touching
+- Laser becomes flat when turning in certain directions
+- sometimes the mirror doesn't bounce
 ___
 ### Done
 - Laser must be working
