@@ -20,7 +20,7 @@ export class Mirror extends Entity {
     }
 
     onHitByLaser(faceId, angle) {
-        if (faceId == 1) {
+        if (faceId === 0 || faceId === 1) {
             this.mesh.getFacetNormal(faceId);
             if (angle > 0) return 1; // left
             if (angle < 0) return 2; // right

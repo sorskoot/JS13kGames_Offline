@@ -18,7 +18,7 @@ for o = 1 to numobj do
 	format "{" to:out_file
 	format "type:'%'," type to:out_file
 	format "pos:[%, %, %]," (round obj.position.x) ((round obj.position.z)+.5) (round obj.position.y) to:out_file
-	format "rot:%," (((mod ((obj.rotation as eulerAngles).z+360) 360) / 90) as integer) to:out_file
+	format "rot:%," (((mod ((obj.rotation as eulerAngles).z + 540) 360) / 90) as integer) to:out_file
 	format "},\n" to:out_file
 )
   

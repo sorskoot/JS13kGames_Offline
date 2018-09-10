@@ -73,8 +73,8 @@ export class Laserbeam {
     calculateBeam(origin, direction, lastHit) {
         let rayDirection = new BABYLON.Vector3(Math.sin(Math.PI * direction / 2), 0, Math.cos(Math.PI * direction / 2));
         var ray = new BABYLON.Ray(origin, rayDirection, 100);
-        // let rayHelper = new BABYLON.RayHelper(ray);
-        // rayHelper.show(this.scene);
+        //  let rayHelper = new BABYLON.RayHelper(ray);
+        //  rayHelper.show(this.scene);
         var hit = this.scene.pickWithRay(ray, (mesh) => {
             if (mesh.name.startsWith("startLaser") || !mesh.isPickable || mesh.name === lastHit) {
                 return false;

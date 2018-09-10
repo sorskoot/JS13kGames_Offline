@@ -8,7 +8,7 @@ class Offline {
         this.canvas = document.getElementById("renderCanvas");
         this.engine = new BABYLON.Engine(this.canvas, true);
         this.scene = new BABYLON.Scene(this.engine);
-        //this.scene.debugLayer.show();
+        this.scene.debugLayer.show();
         window.game = new Game(this.scene);
 
         game.createScene(this.scene);

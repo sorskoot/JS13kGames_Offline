@@ -52,7 +52,7 @@ export class Entity {
             this.scene.render();
             this.onPicked(this);
         }).bind(this, this.mesh)));
-        
+        this.mesh.rotation.y = this.rotation * Math.PI / 2;
         BABYLON.Tags.AddTagsTo(this.mesh, "entity");
         this.mesh.entity = this;
 

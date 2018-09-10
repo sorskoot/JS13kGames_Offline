@@ -13,6 +13,7 @@ ___
 - Better environment
 - Lots of puzzles
 - Improve graphics
+- collision with walls
 ___
 ## Could Have
 - Highlighting boxes when selecting
@@ -28,9 +29,10 @@ ___
 ### Bugs
 - Glitches on Mobile when touching
 - Laser becomes flat when turning in certain directions
-- sometimes the mirror doesn't bounce
+
 ___
 ### Done
+- sometimes the mirror doesn't bounce
 - Laser must be working
   - laser must change direction on mirrors
   - laser must stup on wall or side of mirror or laser
