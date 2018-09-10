@@ -94,7 +94,7 @@ export class Game {
         scene.activeCamera.inertia = 0.6;
         scene.activeCamera.speed = 0.5;
         scene.activeCamera.applyGravity = true;
-        scene.activeCamera.ellipsoid = new BABYLON.Vector3(1, 1, 1);
+        scene.activeCamera.ellipsoid = new BABYLON.Vector3(.25, .75, .25);
         scene.collisionsEnabled = true;
         scene.activeCamera.checkCollisions = true;
 

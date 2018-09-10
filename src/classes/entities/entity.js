@@ -45,7 +45,7 @@ export class Entity {
         this.mesh.material = this.mat;
         this.mesh.material.backFaceCulling = false;
         this.mesh.position = new BABYLON.Vector3(...this.position);
-
+        this.mesh.checkCollisions = true;
         this.mesh.actionManager = new BABYLON.ActionManager(this.scene);
         this.mesh.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPickTrigger, (function (mesh) {
             this.onPick(this);
