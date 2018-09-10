@@ -29,6 +29,7 @@ ___
 ### Bugs
 - Glitches on Mobile when touching
 - Laser becomes flat when turning in certain directions
+- Laser pokes through the mirror a bit
 
 ___
 ### Done
