@@ -7,7 +7,6 @@
 ___
 ## Should Have
 - Better looking laser
-- Shadows / Better Lighting
 - VR Controller support
 - More variation in blocks
 - 3D Puzzles
@@ -41,3 +40,4 @@ ___
 - win puzzle when end laser is hit
 - Improve architecture / Refactoring
 - collision with walls
+- Shadows / Better Lighting

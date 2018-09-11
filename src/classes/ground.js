@@ -20,6 +20,13 @@ export class Ground{
         groundmat.diffuseTexture.vScale = 0.249;
         groundmat.diffuseTexture.wrapU = BABYLON.Texture.MIRROR_ADDRESSMODE;
         groundmat.diffuseTexture.wrapV = BABYLON.Texture.MIRROR_ADDRESSMODE;
+
+        groundmat.specularTexture = texture;
+        groundmat.specularTexture.uScale = 0.249;
+        groundmat.specularTexture.vScale = 0.249;
+        groundmat.specularTexture.wrapU = BABYLON.Texture.MIRROR_ADDRESSMODE;
+        groundmat.specularTexture.wrapV = BABYLON.Texture.MIRROR_ADDRESSMODE;
+
         groundmat.specularColor = new BABYLON.Color3(0, 0, 0);
         this.mesh.material = groundmat;
         this.mesh.checkCollisions = true;
