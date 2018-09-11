@@ -3,6 +3,7 @@
 ## Must Have
 - Menu + Game info
 - More puzzles
+- Laser must be green
 ___
 ## Should Have
 - Better looking laser
