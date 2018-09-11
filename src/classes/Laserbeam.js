@@ -66,6 +66,16 @@ export class Laserbeam {
             radius: .15
         }, this.scene);
         BABYLON.Tags.AddTagsTo(this.laser, "entity");
+        this.laser.material = new BABYLON.StandardMaterial("laserMat", this.scene);
+          var gl = new BABYLON.GlowLayer("glow", this.scene);
+gl.customEmissiveColorSelector = function(mesh, subMesh, material, result) {
+    gl.intensity = .75;
+    if (mesh.name === "laserbeam") {
+        result.set(.3, 1, .3, 1);
+    } else {
+        result.set(0, 0, 0, 0);
+    }
+}
 
         this.laser.isPickable = false;
     }
