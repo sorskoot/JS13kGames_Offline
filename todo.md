@@ -3,10 +3,8 @@
 ## Must Have
 - Menu + Game info
 - More puzzles
-- Laser must be green
 ___
 ## Should Have
-- Better looking laser
 - VR Controller support
 - More variation in blocks
 - 3D Puzzles
@@ -41,3 +39,6 @@ ___
 - Improve architecture / Refactoring
 - collision with walls
 - Shadows / Better Lighting
+- Laser must be green
+- Better looking laser
+- onWin gets lost after upwinning level

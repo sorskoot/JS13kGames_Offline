@@ -25,23 +25,24 @@ export class Game {
         this.puzzleManager = new PuzzleManager();
         this.initPuzzle();
 
-        this.laserbeam.onWin = () => {
-            var meshes = this.scene.getMeshesByTags("entity");
-            for (let i = 0; i < meshes.length; i++) {
-                this.scene.removeMesh(meshes[i]);
-            }
-            this.puzzleManager.next();
-            this.initPuzzle();
-            this.createPuzzle();
-            this.updateShadow();
-            this.laserbeam.drawLaser();
-        };
+    }
+
+    win() {
+        var meshes = this.scene.getMeshesByTags("entity");
+        for (let i = 0; i < meshes.length; i++) {
+            this.scene.removeMesh(meshes[i]);
+        }
+        this.puzzleManager.next();
+        this.initPuzzle();
+        this.createPuzzle();
+        this.updateShadow();
+        this.laserbeam.drawLaser();
     }
 
     initPuzzle() {
-
         this.puzzle = this.puzzleManager.puzzle;
         this.laserbeam = new Laserbeam(this.scene, this.puzzle);
+        this.laserbeam.onWin = this.win.bind(this);
     }
 
     initMaps() {
@@ -58,7 +59,7 @@ export class Game {
     createScene(scene) {
         var hemiLight = new BABYLON.HemisphericLight("HemiLight", new BABYLON.Vector3(0, 1, 0), scene);
         hemiLight.diffuse = new BABYLON.Color3(.2, .4, .5);
-      
+
 
         var light = new BABYLON.DirectionalLight("light2", new BABYLON.Vector3(-2, -3, 1), scene);
         light.position = new BABYLON.Vector3(6, 9, 3);
@@ -67,9 +68,9 @@ export class Game {
         light.intensity = 5;
 
         var generator = new BABYLON.ShadowGenerator(2048, light);
-    
+
         generator.forceBackFacesOnly = true;
-        
+
 
         //Tiles:
         // 0: Ground
@@ -101,16 +102,67 @@ export class Game {
         this.vrHelper.enableTeleportation({
             floorMeshName: ground.name
         });
+        let self = this;
+        self.selectedMesh = {};
+        self.needsUnpressing = false;
+        this.vrHelper.onControllerMeshLoaded.add((webVRController) => {
+            // var controllerMesh = webVRController.mesh;
+            webVRController.onTriggerStateChangedObservable.add((a) => {
+                
+                if (a.pressed && !self.needsUnpressing) {
+                    self.needsUnpressing = true;
+                    if(self.selectedMesh.entity)
+                    self.selectedMesh.entity.trigger();
+                } else if (!a.pressed && self.needsUnpressing) {
+                    self.needsUnpressing = false;
+                }
 
+
+            });
+        });
+        this.vrHelper.onNewMeshSelected.add((mesh) => {
+            self.selectedMesh = mesh;
+        });
+        this.vrHelper.onSelectedMeshUnselected.add((mesh) => {
+            self.selectedMesh = {};
+        });
+
+        this.vrHelper.meshSelectionPredicate = (mesh) => {
+            if (BABYLON.Tags.MatchesQuery(mesh, "block")|| mesh.name== ground.name) { //.name.indexOf("Entity") !== -1) {
+                console.log(mesh.name);
+                return true;
+                
+            }
+            return false;
+        };
         scene.activeCamera.inertia = 0.6;
         scene.activeCamera.speed = 0.5;
-        scene.activeCamera.minZ = .1; 
+        scene.activeCamera.minZ = .1;
         scene.activeCamera.applyGravity = true;
         scene.activeCamera.ellipsoid = new BABYLON.Vector3(.25, .75, .25);
         scene.collisionsEnabled = true;
         scene.activeCamera.checkCollisions = true;
 
+        var textureResolution = 512;
+        var textureGround = new BABYLON.DynamicTexture("dynamic texture", {
+            width: 512,
+            height: 256
+        }, scene);
+        var textureContext = textureGround.getContext();
+        textureGround.hasAlpha = true;
+        var materialGround = new BABYLON.StandardMaterial("Mat", scene);
+        materialGround.opacityTexture = textureGround;
 
+
+        //Add text to dynamic texture
+        var font = "bold 44px monospace";
+        textureGround.drawText("Grass", 75, 135, font, "green", null, true, true);
+        var sphere = BABYLON.MeshBuilder.CreatePlane("sphere1", {
+            height: 1,
+            width: 1
+        }, scene);
+        sphere.material = materialGround;
+        sphere.position.y = 1.5;
         this.generator = generator;
         this.updateShadow();
         this.laserbeam.drawLaser();

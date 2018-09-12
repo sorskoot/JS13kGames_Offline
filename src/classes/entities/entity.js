@@ -24,7 +24,11 @@ export class Entity {
     onHitByLaser(faceId, angle) {
         return 0; // stop
     }
-
+trigger(){
+    this.onPick(this);
+    this.scene.render();
+    this.onPicked(this);
+}
     buildMesh() {
 
         //Create a vertexData object
@@ -54,6 +58,7 @@ export class Entity {
         }).bind(this, this.mesh)));
         this.mesh.rotation.y = this.rotation * Math.PI / 2;
         BABYLON.Tags.AddTagsTo(this.mesh, "entity");
+        BABYLON.Tags.AddTagsTo(this.mesh, "block");
         this.mesh.entity = this;
 
         return this.mesh;
