@@ -165,9 +165,9 @@ export class Game {
         // }, scene);
         // sphere.material = materialGround;
         // sphere.position.y = 1.5;
-        // this.generator = generator;
-        // this.updateShadow();
-        // this.laserbeam.drawLaser();
+        this.generator = generator;
+        this.updateShadow();
+        this.laserbeam.drawLaser();
     }
 
     updateShadow() {
