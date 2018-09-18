@@ -99,9 +99,7 @@ export class Game {
         scene.gravity = new BABYLON.Vector3(0, -9.81, 0);
 
         this.vrHelper.enableInteractions();
-        this.vrHelper.enableTeleportation({
-            floorMeshName: ground.name
-        });
+
         let self = this;
         self.selectedMesh = {};
         self.needsUnpressing = false;
@@ -142,6 +140,10 @@ export class Game {
         scene.activeCamera.ellipsoid = new BABYLON.Vector3(.25, .75, .25);
         scene.collisionsEnabled = true;
         scene.activeCamera.checkCollisions = true;
+        
+        this.vrHelper.enableTeleportation({
+            floorMeshName: ground.name
+        });
 
         var textureResolution = 512;
         var textureGround = new BABYLON.DynamicTexture("dynamic texture", {
