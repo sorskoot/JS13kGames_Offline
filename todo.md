@@ -28,7 +28,7 @@ ___
 - Glitches on Mobile when touching
 - Laser becomes flat when turning in certain directions
 - Laser pokes through the mirror a bit
-
+- Teleportation doesn't work anymore
 ___
 ### Done
 - sometimes the mirror doesn't bounce

@@ -157,17 +157,17 @@ export class Game {
 
 
         //Add text to dynamic texture
-        var font = "bold 44px monospace";
-        textureGround.drawText("Grass", 75, 135, font, "green", null, true, true);
-        var sphere = BABYLON.MeshBuilder.CreatePlane("sphere1", {
-            height: 1,
-            width: 1
-        }, scene);
-        sphere.material = materialGround;
-        sphere.position.y = 1.5;
-        this.generator = generator;
-        this.updateShadow();
-        this.laserbeam.drawLaser();
+        // var font = "bold 44px monospace";
+        // textureGround.drawText("Grass", 75, 135, font, "green", null, true, true);
+        // var sphere = BABYLON.MeshBuilder.CreatePlane("sphere1", {
+        //     height: 1,
+        //     width: 1
+        // }, scene);
+        // sphere.material = materialGround;
+        // sphere.position.y = 1.5;
+        // this.generator = generator;
+        // this.updateShadow();
+        // this.laserbeam.drawLaser();
     }
 
     updateShadow() {
