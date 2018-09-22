@@ -96,8 +96,12 @@ gl.customEmissiveColorSelector = function(mesh, subMesh, material, result) {
             let ref = hit.pickedMesh.getFacetNormal(hit.faceId);
             var angle = Math.round(Math.asin(BABYLON.Vector3.Cross(ref, ray.direction).y) * 180 / Math.PI);
             let hitStatus = hit.pickedMesh.entity.onHitByLaser(hit.faceId, angle);
+            let nextTarget = hit.pickedMesh.position;
+            if(hitStatus === 0 ){
+                nextTarget = hit.pickedPoint;
+            }
             return {
-                nextTarget: hit.pickedMesh.position,
+                nextTarget: nextTarget,
                 hitStatus,
                 lastHit: hit.pickedMesh.name
             };
