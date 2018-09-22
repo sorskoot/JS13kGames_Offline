@@ -12,4 +12,15 @@ export class Portal extends Entity {
         this.onPick = () => this.mesh.rotation.y = this.mesh.rotation.y + Math.PI / 2;
     }
 
+    
+    onHitByLaser(faceId) {
+        if (faceId === 10 || faceId === 11) {
+          console.log('hit portal');
+          //return 4; //portal
+          return 0;
+        } else {
+            return 0; //stop
+        }
+
+    }
 }

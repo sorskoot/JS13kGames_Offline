@@ -5,6 +5,7 @@ export class Laserbeam {
     // 1 turn left
     // 2 turn right
     // 3 hitting target
+    // 4 hitting portal
 
     constructor(scene, puzzle) {
         this.scene = scene;

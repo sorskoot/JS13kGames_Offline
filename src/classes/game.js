@@ -206,6 +206,9 @@ export class Game {
                     break;
                 case 'portal':
                     let portal = new Portal(this.scene, this.puzzle[i].pos, this.puzzle[i].rot);                
+                    portal.onPicked = () => {
+                        this.laserbeam.drawLaser();
+                    };
                     break;
                 case 'wall':
                     new Wall(this.scene, this.puzzle[i].pos, this.puzzle[i].rot);
