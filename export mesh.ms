@@ -5,7 +5,7 @@ num_verts = tmesh.numverts
 num_faces = tmesh.numfaces
 num_tverts = tmesh.numtverts 
 
-format "%, %, %\n" num_verts num_faces num_tverts
+format "verts: %, faces:%, textureverts:%\n" num_verts num_faces num_tverts
 format "Verts:\n"
 
 for v = 1 to num_verts do
