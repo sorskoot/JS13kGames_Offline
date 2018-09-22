@@ -16,6 +16,7 @@ import {
 import {
     Laserbeam
 } from "./Laserbeam";
+import { Portal } from "./entities/portal";
 
 export class Game {
 
@@ -67,7 +68,7 @@ export class Game {
         light.shadowMaxZ = 20;
         light.intensity = 5;
 
-        var generator = new BABYLON.ShadowGenerator(2048, light);
+        var generator = new BABYLON.ShadowGenerator(4096, light);
 
         generator.forceBackFacesOnly = true;
 
@@ -202,6 +203,9 @@ export class Game {
                     mirror.onPicked = () => {
                         this.laserbeam.drawLaser();
                     };
+                    break;
+                case 'portal':
+                    let portal = new Portal(this.scene, this.puzzle[i].pos, this.puzzle[i].rot);                
                     break;
                 case 'wall':
                     new Wall(this.scene, this.puzzle[i].pos, this.puzzle[i].rot);

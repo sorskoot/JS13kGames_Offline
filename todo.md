@@ -7,6 +7,10 @@ ___
 ## Should Have
 - VR Controller support
 - More variation in blocks
+    - Portal blocks
+    - Vertical mirrors
+    - Vertial portals
+
 - 3D Puzzles
 - Better environment
 - Lots of puzzles
@@ -15,6 +19,7 @@ ___
 ___
 ## Could Have
 - Highlighting boxes when selecting
+- Prevent player from falling off
 - SFX
 - Skybox
 - Particle FX
