@@ -1,6 +1,7 @@
 # JS13K Games 2018 - OFFLINE
 
 ## Must Have
+- Make portal work
 - Menu + Game info
 - More puzzles
 ___
@@ -23,6 +24,7 @@ ___
 - SFX
 - Skybox
 - Particle FX
+- Animations
 - game controller support
 - Even more of puzzles in various levels
 ___
